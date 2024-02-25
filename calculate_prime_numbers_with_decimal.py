@@ -1,11 +1,12 @@
 import time
 import locale
+from decimal import Decimal, getcontext
 
 def find_prime_larger_than(number):
-    num = number + 1  # 指定した自然数よりも大きい数から開始する
+    num = number + Decimal(1)  # 指定した自然数よりも大きい数から開始する
     while True:
         is_prime = True
-        for i in range(2, int(num**0.5) + 1):
+        for i in range(2, int(num.sqrt()) + 1):
             if num % i == 0:
                 is_prime = False
                 break
@@ -25,13 +26,13 @@ def kanji_number(number):
             continue
         digit_str = str(digit_group)
         if kanji_representation:
-            kanji_representation = "" + kanji_representation
+            kanji_representation = " " + kanji_representation
         kanji_representation = digit_str + digits[i] + kanji_representation
     return kanji_representation
 
 # 指定した自然数
-#input_number = 9223372036854775807
-input_number =  922337203685477580
+input_number = Decimal("10000000000000000000")
+getcontext().prec = 21  # 精度を設定
 start_time = time.time()
 prime_number = find_prime_larger_than(input_number)
 end_time = time.time()
@@ -42,11 +43,12 @@ formatted_input_number = locale.format_string('%d', input_number, grouping=True)
 formatted_prime_number = locale.format_string('%d', prime_number, grouping=True)
 
 # 漢数字で表示
-kanji_input_number = kanji_number(input_number)
-kanji_prime_number = kanji_number(prime_number)
+kanji_input_number = kanji_number(int(input_number))
+kanji_prime_number = kanji_number(int(prime_number))
 
 # 左側の数字の桁数を計算
-input_digits = len(str(input_number))
+input_digits = len(str(int(input_number)))
+prime_digits = len(str(int(prime_number)))
 
-print(f"{formatted_input_number} ({kanji_input_number}) よりも大きい素数: {formatted_prime_number} ({kanji_prime_number}), 入力桁数: {input_digits}桁, 素数桁数: {len(str(prime_number))}桁")
+print(f"{formatted_input_number} ({kanji_input_number}) よりも大きい素数: {formatted_prime_number} ({kanji_prime_number}), 入力桁数: {input_digits}桁, 素数桁数: {prime_digits}桁")
 print(f"実行時間: {end_time - start_time:.5f}秒")
